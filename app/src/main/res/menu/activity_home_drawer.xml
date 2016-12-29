@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:title="Get Request" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:title="Post Request" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:title="Put Request" />
+        <item
+            android:id="@+id/nav_manage"
+            android:title="Delete Request" />
+    </group>
+
+    <item android:title="Header Manipulation">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>
