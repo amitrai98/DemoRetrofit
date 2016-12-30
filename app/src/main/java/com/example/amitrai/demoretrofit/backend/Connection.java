@@ -2,18 +2,17 @@ package com.example.amitrai.demoretrofit.backend;
 
 import android.util.Log;
 
-import javax.inject.Singleton;
+import com.example.amitrai.demoretrofit.listeners.ResponseListener;
 
-import dagger.Module;
-import dagger.Provides;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by amitrai on 29/12/16.
  */
 
-@Module
 public class Connection {
 
     private final String TAG = getClass().getSimpleName();
@@ -24,21 +23,34 @@ public class Connection {
      * creats the instance of connection.
      * @return connection
      */
-    @Provides
-    @Singleton
     public Connection getInstance(){
         return  new Connection();
     }
 
-    @Provides
-    @Singleton
-    public Retrofit getClient() {
-            return new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-    }
+    public void request(Call<ResponseBody> call, final ResponseListener responseListener){
 
+        try {
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        ResponseBody body = response.body();
+                        String response_string = body.string();
+                        responseListener.onSuccess(response_string);
+                    }catch (Exception exp){
+                        exp.printStackTrace();
+                    }
+                }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.e(TAG, "response"+t);
+                    responseListener.onError(t.getMessage());
+                }
+            });
+        }catch (Exception exp){
+            exp.printStackTrace();
+        }
+    }
 
     public void makeRequest(){
         Log.e(TAG, "got your call");

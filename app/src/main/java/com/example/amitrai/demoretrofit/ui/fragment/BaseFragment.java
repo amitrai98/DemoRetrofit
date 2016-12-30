@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.amitrai.demoretrofit.R;
+import com.example.amitrai.demoretrofit.backend.ApiInterface;
+import com.example.amitrai.demoretrofit.backend.Connection;
 import com.example.amitrai.demoretrofit.ui.AppInitials;
 
 import javax.inject.Inject;
@@ -29,7 +31,10 @@ public abstract class BaseFragment extends Fragment {
 
 
     @Inject
-    String message;
+    ApiInterface service;
+
+    @Inject
+    Connection connection;
 
 
 

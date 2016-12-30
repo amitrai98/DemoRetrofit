@@ -6,5 +6,5 @@ package com.example.amitrai.demoretrofit.listeners;
 
 public interface ResponseListener {
     public void onSuccess(String response);
-    public void onError(Error error);
+    public void onError(String error);
 }

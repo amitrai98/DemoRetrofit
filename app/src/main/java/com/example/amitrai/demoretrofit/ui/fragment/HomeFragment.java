@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.amitrai.demoretrofit.R;
+import com.example.amitrai.demoretrofit.listeners.ResponseListener;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 
 import static android.content.ContentValues.TAG;
 
@@ -80,14 +83,7 @@ public class HomeFragment extends BaseFragment {
         ButterKnife.bind(this, view);
     }
 
-    @OnClick(R.id.btn_login)
-    void attemptLogin(){
-        try {
-            Log.e(TAG, ""+message);
-        }catch (Exception exp){
-            exp.printStackTrace();
-        }
-    }
+
 
     @Override
     public void onDestroy() {
@@ -122,5 +118,25 @@ public class HomeFragment extends BaseFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @OnClick(R.id.btn_login)
+    void attemptLogin(){
+        try {
+            Call<ResponseBody> call = service.loginCall("amit.rai@evontech.com","123456");
+            connection.request(call, new ResponseListener() {
+                @Override
+                public void onSuccess(String response) {
+                    Log.e(TAG, "get respo"+response);
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "get error"+error);
+                }
+            });
+        }catch (Exception exp){
+            exp.printStackTrace();
+        }
     }
 }

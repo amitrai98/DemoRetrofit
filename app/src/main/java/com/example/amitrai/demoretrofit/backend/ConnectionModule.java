@@ -12,7 +12,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -50,13 +49,23 @@ public class ConnectionModule {
 
     @Provides
     @Singleton
-    Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl(mBaseUrl)
-                .client(okHttpClient)
+    Retrofit provideRetrofit() {
+        return new Retrofit.Builder()
+                .baseUrl(ApiInterface.SERVER_URL)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit;
+    }
+
+    @Provides
+    @Singleton
+    ApiInterface provideIterface(){
+        return provideRetrofit().create(ApiInterface.class);
+    }
+
+    @Provides
+    @Singleton
+    Connection provideConnection(){
+        return new Connection();
     }
 
     @Provides
