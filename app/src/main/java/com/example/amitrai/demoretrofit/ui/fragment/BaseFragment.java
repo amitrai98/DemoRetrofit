@@ -3,7 +3,6 @@ package com.example.amitrai.demoretrofit.ui.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +23,14 @@ public abstract class BaseFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    @Inject
-    String message;
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    @Inject
+    String message;
+
 
 
     public BaseFragment() {
@@ -41,10 +42,7 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FragmentActivity activity = getActivity();
-
         AppInitials.getContext().getNetComponent().inject(this);
-
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);

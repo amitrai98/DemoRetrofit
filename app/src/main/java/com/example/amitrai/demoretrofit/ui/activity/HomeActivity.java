@@ -7,7 +7,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -48,8 +47,8 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void initView() {
-        String url = component;
-        Log.e(TAG, ""+url);
+//        String url = component;
+//        Log.e(TAG, ""+url);
         replaceFragment(HomeFragment.newInstance("home","fragment"), true);
     }
 

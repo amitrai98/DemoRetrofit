@@ -1,6 +1,5 @@
 package com.example.amitrai.demoretrofit.backend;
 
-import com.example.amitrai.demoretrofit.ui.activity.BaseActivity;
 import com.example.amitrai.demoretrofit.ui.fragment.BaseFragment;
 
 import javax.inject.Singleton;
@@ -13,9 +12,8 @@ import dagger.Component;
 @Singleton
 @Component(modules={ConnectionModule.class})
 public interface NetComponent {
-    void inject(BaseActivity activity);
-    void inject(BaseFragment fragment);
-    // void inject(MyFragment fragment);
+//    void inject(BaseActivity activity);
+     void inject(BaseFragment fragment);
     // void inject(MyService service);
 }
 

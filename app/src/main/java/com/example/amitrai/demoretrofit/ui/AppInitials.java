@@ -21,9 +21,14 @@ public class AppInitials extends Application {
 
         context = this;
         // Dagger%COMPONENT_NAME%
+//        component = DaggerNetComponent.builder()
+//                // list of modules that are part of this component need to be created here too
+////                .ConnectionModule(new ConnectionModule("https://api.github.com"))
+//                .ConnectionModule(new ConnectionModule(""));
+//                .build();
+
         component = DaggerNetComponent.builder()
-                // list of modules that are part of this component need to be created here too
-                .ConnectionModule(new ConnectionModule("https://api.github.com"))
+                .connectionModule(new ConnectionModule("https://api.github.com"))
                 .build();
     }
 

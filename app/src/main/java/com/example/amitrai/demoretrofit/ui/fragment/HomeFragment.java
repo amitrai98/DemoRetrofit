@@ -4,15 +4,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.amitrai.demoretrofit.R;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,8 +83,7 @@ public class HomeFragment extends BaseFragment {
     @OnClick(R.id.btn_login)
     void attemptLogin(){
         try {
-            Toast.makeText(getActivity(),"here is "+message, Toast.LENGTH_SHORT).show();
-//            connection.makeRequest();
+            Log.e(TAG, ""+message);
         }catch (Exception exp){
             exp.printStackTrace();
         }

@@ -6,23 +6,24 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.amitrai.demoretrofit.R;
-import com.example.amitrai.demoretrofit.ui.AppInitials;
 import com.example.amitrai.demoretrofit.ui.fragment.BaseFragment;
-
-import javax.inject.Inject;
 
 public abstract class BaseActivity extends AppCompatActivity{
 
 
-    @Inject
-    String component;
+//    @Inject
+//    public String component;
+//
+//    @Inject
+//    public SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        ((AppInitials) getApplication()).getNetComponent().inject(this);
+//        ((AppInitials) getApplication()).getNetComponent().inject(this);
     }
 
 
