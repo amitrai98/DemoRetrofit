@@ -1,6 +1,8 @@
 package com.example.amitrai.demoretrofit.ui.fragment;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,10 +10,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.amitrai.demoretrofit.R;
+import com.example.amitrai.demoretrofit.listeners.ActivityResultListener;
+import com.example.amitrai.demoretrofit.listeners.PermissionListener;
 import com.example.amitrai.demoretrofit.listeners.ResponseListener;
+import com.example.amitrai.demoretrofit.ui.activity.BaseActivity;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.ResponseBody;
@@ -32,10 +40,14 @@ public class HomeFragment extends BaseFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int PICK_IMAGE_REQUEST = 201;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    @Bind(R.id.btn_register)
+    Button btn_register;
 
 
     public HomeFragment() {
@@ -75,12 +87,22 @@ public class HomeFragment extends BaseFragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
         initView(view);
+
         return view;
     }
 
     @Override
     public void initView(View view) {
         ButterKnife.bind(this, view);
+        Button btn_register = (Button) view.findViewById(R.id.btn_register);
+        btn_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG, "register called");
+//                attemptRegister();
+                selectImage();
+            }
+        });
     }
 
 
@@ -123,7 +145,7 @@ public class HomeFragment extends BaseFragment {
     @OnClick(R.id.btn_login)
     void attemptLogin(){
         try {
-            Call<ResponseBody> call = service.loginCall("amit.rai@evontech.com","123456");
+            Call<ResponseBody> call = service.login("amit.rai@evontech.com","123456");
             connection.request(call, new ResponseListener() {
                 @Override
                 public void onSuccess(String response) {
@@ -138,5 +160,119 @@ public class HomeFragment extends BaseFragment {
         }catch (Exception exp){
             exp.printStackTrace();
         }
+    }
+
+    @OnClick(R.id.btn_register)
+    void attemptRegister(){
+        try {
+            Log.e(TAG, "received call");
+            Call<ResponseBody> call = service.register("android_user","user@evon.com","asdf"
+                    ,"123456789");
+            connection.request(call, new ResponseListener() {
+                @Override
+                public void onSuccess(String response) {
+                    Log.e(TAG, "get respo"+response);
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e(TAG, "get err"+error);
+                }
+            });
+        }catch (Exception exp){
+            exp.printStackTrace();
+        }
+    }
+
+    /**
+     * uploads image on server.
+     */
+    private void uploadImage(String filePath){
+        connection.uploadImage(filePath, service, new ResponseListener() {
+            @Override
+            public void onSuccess(String response) {
+                Log.e(TAG, ""+response);
+                Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, ""+error);
+            }
+        });
+    }
+
+
+    private void selectImage(){
+
+        utility.checkPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE,
+                new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(int permission_code) {
+                        BaseActivity ctx = (BaseActivity) getContext();
+                        ctx.selectImage(new ActivityResultListener() {
+                            @Override
+                            public void onActivityResult(Intent data) {
+                                try {
+                                    Uri selectedImage = data.getData();
+                                    String path = utility.getRealPathFromURI_API19(getActivity(), selectedImage);
+                                    Log.e(TAG, ""+path);
+                                    uploadImage(path);
+                                }catch (Exception exp){
+                                    exp.printStackTrace();
+                                }
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onPermissionDenied(int permission_code) {
+
+                    }
+                });
+
+
+//        if(utility.isStoragePermissionGranted(getActivity(), new PermissionListener() {
+//            @Override
+//            public void onPermissionGranted(int permission_code) {
+//                BaseActivity ctx = (BaseActivity) getContext();
+//                ctx.selectImage(new ActivityResultListener() {
+//                    @Override
+//                    public void onActivityResult(Intent data) {
+//                        try {
+//                            Uri selectedImage = data.getData();
+//                            String path = utility.getRealPathFromURI_API19(getActivity(), selectedImage);
+//                            Log.e(TAG, ""+path);
+//                            uploadImage(path);
+//                        }catch (Exception exp){
+//                            exp.printStackTrace();
+//                        }
+//
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onPermissionDenied(int permission_code) {
+//                Toast.makeText(getActivity(), "permission denied for uploading images", Toast.LENGTH_SHORT).show();
+//            }
+//        })){
+//            BaseActivity ctx = (BaseActivity) getContext();
+//            ctx.selectImage(new ActivityResultListener() {
+//                @Override
+//                public void onActivityResult(Intent data) {
+//                    try {
+//                        Uri selectedImage = data.getData();
+//                        String path = utility.getRealPathFromURI_API19(getActivity(), selectedImage);
+//                        Log.e(TAG, ""+path);
+//                        uploadImage(path);
+//                    }catch (Exception exp){
+//                        exp.printStackTrace();
+//                    }
+//
+//                }
+//            });
+//        }
     }
 }

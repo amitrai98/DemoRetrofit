@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.amitrai.demoretrofit.utility.AppConstants;
+import com.example.amitrai.demoretrofit.utility.Utility;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -44,6 +46,18 @@ public class ConnectionModule {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
         return gsonBuilder.create();
+    }
+
+    @Provides
+    @Singleton
+    Utility provideUtility(){
+        return new Utility();
+    }
+
+    @Provides
+    @Singleton
+    AppConstants provideAppConstants(){
+        return new AppConstants();
     }
 
 
