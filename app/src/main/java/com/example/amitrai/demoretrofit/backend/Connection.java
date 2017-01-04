@@ -44,9 +44,14 @@ public class Connection {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     try {
-                        ResponseBody body = response.body();
-                        String response_string = body.string();
-                        responseListener.onSuccess(response_string);
+                        if(response != null && response.body() != null){
+                            ResponseBody body = response.body();
+                            String response_string = body.string();
+                            responseListener.onSuccess(response_string);
+                        }else {
+                            responseListener.onError("null received");
+                        }
+
                     }catch (Exception exp){
                         exp.printStackTrace();
                     }

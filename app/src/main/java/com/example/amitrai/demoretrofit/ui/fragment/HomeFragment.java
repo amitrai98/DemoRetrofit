@@ -98,9 +98,11 @@ public class HomeFragment extends BaseFragment {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(TAG, "register called");
+                Log.e(TAG, "register called"+utility.getTimeAgo("2017-01-04 15:45:39"));
+
 //                attemptRegister();
-                selectImage();
+//                selectImage();
+//                createTask();
             }
         });
     }
@@ -204,7 +206,6 @@ public class HomeFragment extends BaseFragment {
 
 
     private void selectImage(){
-
         utility.checkPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE,
                 new PermissionListener() {
                     @Override
@@ -221,7 +222,6 @@ public class HomeFragment extends BaseFragment {
                                 }catch (Exception exp){
                                     exp.printStackTrace();
                                 }
-
                             }
                         });
                     }
@@ -232,47 +232,5 @@ public class HomeFragment extends BaseFragment {
                     }
                 });
 
-
-//        if(utility.isStoragePermissionGranted(getActivity(), new PermissionListener() {
-//            @Override
-//            public void onPermissionGranted(int permission_code) {
-//                BaseActivity ctx = (BaseActivity) getContext();
-//                ctx.selectImage(new ActivityResultListener() {
-//                    @Override
-//                    public void onActivityResult(Intent data) {
-//                        try {
-//                            Uri selectedImage = data.getData();
-//                            String path = utility.getRealPathFromURI_API19(getActivity(), selectedImage);
-//                            Log.e(TAG, ""+path);
-//                            uploadImage(path);
-//                        }catch (Exception exp){
-//                            exp.printStackTrace();
-//                        }
-//
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onPermissionDenied(int permission_code) {
-//                Toast.makeText(getActivity(), "permission denied for uploading images", Toast.LENGTH_SHORT).show();
-//            }
-//        })){
-//            BaseActivity ctx = (BaseActivity) getContext();
-//            ctx.selectImage(new ActivityResultListener() {
-//                @Override
-//                public void onActivityResult(Intent data) {
-//                    try {
-//                        Uri selectedImage = data.getData();
-//                        String path = utility.getRealPathFromURI_API19(getActivity(), selectedImage);
-//                        Log.e(TAG, ""+path);
-//                        uploadImage(path);
-//                    }catch (Exception exp){
-//                        exp.printStackTrace();
-//                    }
-//
-//                }
-//            });
-//        }
     }
 }

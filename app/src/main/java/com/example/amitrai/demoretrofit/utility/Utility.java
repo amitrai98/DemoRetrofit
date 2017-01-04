@@ -13,11 +13,17 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.CursorLoader;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.example.amitrai.demoretrofit.listeners.PermissionListener;
 import com.example.amitrai.demoretrofit.ui.AppInitials;
 import com.example.amitrai.demoretrofit.ui.activity.BaseActivity;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -137,6 +143,35 @@ public class Utility {
             Log.v(TAG,"Permission is granted");
             listener.onPermissionGranted(102);
         }
+    }
+
+    public String getTimeAgo(String server_time){
+
+//        String givenDateString = "2017-01-04 15:45:39";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");//("EEE MMM dd HH:mm:ss z yyyy");
+        try {
+
+            Calendar c = Calendar.getInstance();
+            System.out.println("Current time => " + c.getTime());
+
+            String formattedDate = sdf.format(c.getTime());
+
+            Date current_date = sdf.parse(formattedDate);
+            Date mDate = sdf.parse(server_time);
+            long timeInMilliseconds = mDate.getTime();
+            long cttimeInMilliseconds = current_date.getTime();
+
+            System.out.println("Date in milli :: " + timeInMilliseconds);
+            return
+                    DateUtils.getRelativeTimeSpanString(timeInMilliseconds,
+                            cttimeInMilliseconds, DateUtils.SECOND_IN_MILLIS).toString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+//        DateUtils.getRelativeTimeSpanString(your_time_in_milliseconds,
+//                ctti, DateUtils.MINUTE_IN_MILLIS);
     }
 
 }

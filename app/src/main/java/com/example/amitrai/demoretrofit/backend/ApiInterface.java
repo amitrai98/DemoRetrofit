@@ -2,13 +2,18 @@ package com.example.amitrai.demoretrofit.backend;
 
 import android.support.annotation.NonNull;
 
+import com.example.amitrai.demoretrofit.models.Task;
+
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -45,4 +50,14 @@ public interface ApiInterface {
     @Multipart
     @POST("/php/task_manager/v1/upload.php")
     Call<ResponseBody> uploadImage(@Part MultipartBody.Part image, @Part("name") RequestBody name);
+
+    @GET("/php/task_manager/v1/tasks")
+    Call<ResponseBody> getTasks(@Header("Authorization") String api_key);
+
+    @POST("/php/task_manager/v1/tasks")
+    Call<ResponseBody> createTask(@Header("Authorization") String api_key, @Body Task task);
+
+    @DELETE("/php/task_manager/v1/tasks/{id}")
+    Call<ResponseBody> deleteTask(@Header("Authorization") String api_key, @Path("id") String itemId);
+
 }

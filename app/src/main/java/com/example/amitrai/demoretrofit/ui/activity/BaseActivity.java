@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.example.amitrai.demoretrofit.R;
 import com.example.amitrai.demoretrofit.listeners.ActivityResultListener;
@@ -46,27 +47,27 @@ public abstract class BaseActivity extends AppCompatActivity{
      */
     public abstract void initView();
 
-    /**
-     * replaces fragment to the container
-     * @param fragment name of fragment to be replaced
-     * @param storeInStack should store in stack or not.
-     */
-    public void replaceFragment(BaseFragment fragment, boolean storeInStack){
-        String backStateName = fragment.getClass().getName();
-
-        FragmentManager manager = getSupportFragmentManager();
-        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
-
-        if (!fragmentPopped){ //fragment not in back stack, create it.
-            FragmentTransaction ft = manager.beginTransaction();
-            ft.replace(R.id.container, fragment);
-
-            if (storeInStack)
-                ft.addToBackStack(backStateName);
-
-            ft.commit();
-        }
-    }
+//    /**
+//     * replaces fragment to the container
+//     * @param fragment name of fragment to be replaced
+//     * @param storeInStack should store in stack or not.
+//     */
+//    public void replaceFragment(BaseFragment fragment, boolean storeInStack){
+//        String backStateName = fragment.getClass().getSimpleName();
+//
+//        FragmentManager manager = getSupportFragmentManager();
+//        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+//
+//        if (!fragmentPopped){ //fragment not in back stack, create it.
+//            FragmentTransaction ft = manager.beginTransaction();
+//            if (storeInStack)
+//                ft.addToBackStack(backStateName);
+//            ft.replace(R.id.container, fragment);
+//
+//
+//            ft.commit();
+//        }
+//    }
 
 
 
@@ -137,5 +138,24 @@ public abstract class BaseActivity extends AppCompatActivity{
      */
     public static void setPermissionListener(@NonNull PermissionListener listener){
         permissionListener = listener;
+    }
+
+
+    public void replaceFragment (BaseFragment fragment, boolean saveInBackStack){
+        String backStateName =  fragment.getClass().getName();
+        String fragmentTag = backStateName;
+
+        FragmentManager manager = getSupportFragmentManager();
+        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
+
+        if (!fragmentPopped){ //fragment not in back stack, create it.
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(R.id.container, fragment, fragmentTag);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            if (saveInBackStack)
+                ft.addToBackStack(backStateName);
+            ft.commit();
+        }else
+            Log.e("sd", "data");
     }
 }

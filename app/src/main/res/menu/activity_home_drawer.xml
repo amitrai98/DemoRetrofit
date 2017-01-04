@@ -3,16 +3,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/get_request"
             android:title="Get Request" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/post_request"
             android:title="Post Request" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/put_request"
             android:title="Put Request" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/delete_request"
             android:title="Delete Request" />
     </group>
 

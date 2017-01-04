@@ -11,7 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.amitrai.demoretrofit.R;
+import com.example.amitrai.demoretrofit.ui.fragment.CreateTaskFragment;
 import com.example.amitrai.demoretrofit.ui.fragment.HomeFragment;
+import com.example.amitrai.demoretrofit.ui.fragment.TasksFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -95,14 +97,19 @@ public class HomeActivity extends BaseActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.get_request) {
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+            TasksFragment fragment = new TasksFragment();
+            fragment.setDelete(false);
+            replaceFragment(fragment, false);
+        } else if (id == R.id.post_request) {
+            replaceFragment(new CreateTaskFragment(), true);
+        } else if (id == R.id.put_request) {
 
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
+        } else if (id == R.id.delete_request) {
+            TasksFragment fragment = new TasksFragment();
+            fragment.setDelete(true);
+            replaceFragment(fragment, false);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
