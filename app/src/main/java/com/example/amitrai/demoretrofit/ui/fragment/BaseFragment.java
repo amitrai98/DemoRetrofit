@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import com.example.amitrai.demoretrofit.R;
 import com.example.amitrai.demoretrofit.backend.ApiInterface;
 import com.example.amitrai.demoretrofit.backend.Connection;
+import com.example.amitrai.demoretrofit.databases.AppPreference;
 import com.example.amitrai.demoretrofit.ui.AppInitials;
+import com.example.amitrai.demoretrofit.ui.activity.BaseActivity;
 import com.example.amitrai.demoretrofit.utility.Utility;
 
 import javax.inject.Inject;
@@ -40,6 +42,12 @@ public abstract class BaseFragment extends Fragment {
     @Inject
     Utility utility;
 
+    @Inject
+    AppPreference preference;
+
+
+    BaseActivity activity;
+
 
 
     public BaseFragment() {
@@ -57,6 +65,8 @@ public abstract class BaseFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        if (getActivity() instanceof  BaseActivity)
+            activity = (BaseActivity) getActivity();
     }
 
     @Override
@@ -71,5 +81,9 @@ public abstract class BaseFragment extends Fragment {
      * @param view parent view of fragment
      */
     public abstract void initView(View view);
+
+    public void replaceFragment(BaseFragment fragment, boolean isAddToStack){
+        activity.replaceFragment(fragment, isAddToStack);
+    }
 
 }

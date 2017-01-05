@@ -28,7 +28,7 @@ public class AppInitials extends Application {
 //                .build();
 
         component = DaggerNetComponent.builder()
-                .connectionModule(new ConnectionModule("https://api.github.com"))
+                .connectionModule(new ConnectionModule("https://api.github.com", getContext()))
                 .build();
     }
 

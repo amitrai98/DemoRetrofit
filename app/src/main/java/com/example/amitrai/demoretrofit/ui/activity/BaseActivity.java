@@ -15,16 +15,14 @@ import com.example.amitrai.demoretrofit.listeners.PermissionListener;
 import com.example.amitrai.demoretrofit.ui.fragment.BaseFragment;
 import com.example.amitrai.demoretrofit.utility.AppConstants;
 
-import javax.inject.Inject;
-
 public abstract class BaseActivity extends AppCompatActivity{
     public static int PICK_IMAGE_REQUEST = 203;
+    private final String TAG = getClass().getSimpleName();
 
     ActivityResultListener activityResultListener;
 
     private static PermissionListener permissionListener;
 
-    @Inject
     AppConstants constants;
 //    @Inject
 //    public String component;
@@ -37,6 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        constants = new AppConstants();
 
 //        ((AppInitials) getApplication()).getNetComponent().inject(this);
     }
@@ -156,6 +155,6 @@ public abstract class BaseActivity extends AppCompatActivity{
                 ft.addToBackStack(backStateName);
             ft.commit();
         }else
-            Log.e("sd", "data");
+            Log.e(TAG, "data");
     }
 }

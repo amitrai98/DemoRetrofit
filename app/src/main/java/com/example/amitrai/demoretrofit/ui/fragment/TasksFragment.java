@@ -57,7 +57,8 @@ public class TasksFragment extends BaseFragment {
 
     TasksFragment fragment;
 
-    private boolean isDelete = false;
+    private String REQUEST_TYPE = "GET";
+    private boolean isEdit = false;
 
 
 
@@ -90,20 +91,16 @@ public class TasksFragment extends BaseFragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-            if (mParam1 != null && mParam1.equalsIgnoreCase("delete")){
-                isDelete = true;
-            }else if (mParam1 != null && mParam1.equalsIgnoreCase("get_task")){
-                isDelete = false;
-            }
         }
 
         taskList.clear();
     }
 
 
-    public void setDelete(boolean isDelete){
-        this.isDelete = isDelete;
+    public void setRequestType(String REQUEST_TYPE){
+        this.REQUEST_TYPE = REQUEST_TYPE;
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,7 +118,7 @@ public class TasksFragment extends BaseFragment {
     public void initView(View view) {
 
         layoutManager = new LinearLayoutManager(getContext());
-        adapter = new TaskAdapter(taskList, utility, isDelete, service, connection);
+        adapter = new TaskAdapter(taskList, REQUEST_TYPE, getContext());
         recycle_tasks.setAdapter(adapter);
         recycle_tasks.setLayoutManager(layoutManager);
 

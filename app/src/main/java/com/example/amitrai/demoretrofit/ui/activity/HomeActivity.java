@@ -7,19 +7,22 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.amitrai.demoretrofit.R;
+import com.example.amitrai.demoretrofit.listeners.LoginListener;
+import com.example.amitrai.demoretrofit.models.Data;
 import com.example.amitrai.demoretrofit.ui.fragment.CreateTaskFragment;
-import com.example.amitrai.demoretrofit.ui.fragment.HomeFragment;
+import com.example.amitrai.demoretrofit.ui.fragment.LoginFragment;
 import com.example.amitrai.demoretrofit.ui.fragment.TasksFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoginListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -27,6 +30,12 @@ public class HomeActivity extends BaseActivity
     DrawerLayout drawer;
     @Bind(R.id.nav_view) NavigationView navigationView;
     private String TAG = getClass().getSimpleName();
+
+//    @Bind(R.id.txt_name)
+//    TextView txt_name;
+//
+//    @Bind(R.id.txt_email)
+//    TextView txt_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +60,9 @@ public class HomeActivity extends BaseActivity
     public void initView() {
 //        String url = component;
 //        Log.e(TAG, ""+url);
-        replaceFragment(HomeFragment.newInstance("home","fragment"), true);
+        LoginFragment fragment = new LoginFragment();
+        fragment.setLoginListener(this);
+        replaceFragment(fragment, true);
     }
 
     @Override
@@ -100,15 +111,18 @@ public class HomeActivity extends BaseActivity
         if (id == R.id.get_request) {
             // Handle the camera action
             TasksFragment fragment = new TasksFragment();
-            fragment.setDelete(false);
+            fragment.setRequestType(constants.GET);
             replaceFragment(fragment, false);
         } else if (id == R.id.post_request) {
             replaceFragment(new CreateTaskFragment(), true);
         } else if (id == R.id.put_request) {
+            TasksFragment fragment = new TasksFragment();
+            fragment.setRequestType(constants.PUT);
+            replaceFragment(fragment, false);
 
         } else if (id == R.id.delete_request) {
             TasksFragment fragment = new TasksFragment();
-            fragment.setDelete(true);
+            fragment.setRequestType(constants.DELETE);
             replaceFragment(fragment, false);
         } else if (id == R.id.nav_share) {
 
@@ -125,5 +139,14 @@ public class HomeActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onLoginSuccess(Data data) {
+//        if(data.getName() != null && txt_name != null)
+//            txt_name.setText(data.getName());
+//        if (data.getEmail() != null && txt_email != null)
+//            txt_email.setText(data.getEmail());
+        Log.e(TAG, ""+data.getName());
     }
 }

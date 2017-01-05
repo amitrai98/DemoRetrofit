@@ -1,9 +1,8 @@
 package com.example.amitrai.demoretrofit.backend;
 
-import android.app.Application;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.content.Context;
 
+import com.example.amitrai.demoretrofit.databases.AppPreference;
 import com.example.amitrai.demoretrofit.utility.AppConstants;
 import com.example.amitrai.demoretrofit.utility.Utility;
 import com.google.gson.FieldNamingPolicy;
@@ -25,19 +24,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ConnectionModule {
 
     String mBaseUrl;
+    Context context;
 
     // Constructor needs one parameter to instantiate.
-    public ConnectionModule(String baseUrl) {
+    public ConnectionModule(String baseUrl, Context context) {
         this.mBaseUrl = baseUrl;
+        this.context = context;
     }
 
     // Dagger will only look for methods annotated with @Provides
     @Provides
     @Singleton
-    // Application reference must come from AppModule.class
-    SharedPreferences providesSharedPreferences(Application application) {
-        return PreferenceManager.getDefaultSharedPreferences(application);
+    AppPreference providesSharedPreferences() {
+        return new AppPreference(context);
     }
+
 
 
     @Provides

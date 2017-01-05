@@ -14,9 +14,9 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -40,7 +40,6 @@ public interface ApiInterface {
                                  @Field("password") @NonNull String password);
 
     @FormUrlEncoded
-    @Headers("API_KEY: 123456")
     @POST("/php/task_manager/v1/register")
     Call<ResponseBody> register(@Field("name") @NonNull String name,
                                     @Field("email") @NonNull String email,
@@ -59,5 +58,10 @@ public interface ApiInterface {
 
     @DELETE("/php/task_manager/v1/tasks/{id}")
     Call<ResponseBody> deleteTask(@Header("Authorization") String api_key, @Path("id") String itemId);
+
+    @FormUrlEncoded
+    @PUT("/php/task_manager/v1/tasks/{id}")
+    Call<ResponseBody> updateTask(@Header("Authorization") String api_key, @Path("id") String id,
+                                  @Field("task") String  task, @Field("status") String status);
 
 }

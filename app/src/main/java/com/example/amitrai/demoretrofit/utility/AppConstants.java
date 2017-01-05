@@ -13,4 +13,10 @@ public class AppConstants {
 
 
     public int  REQUEST_IMAGE_PATH = 201;
+
+    public String GET = "GET";
+    public String POST = "POST";
+    public String PUT = "PUT";
+    public String DELETE = "DELETE";
+
 }

@@ -17,6 +17,12 @@
     <string name="tasks">Tasks</string>
     <string name="status">status</string>
     <string name="date">date</string>
+    <string name="edit">Edit</string>
+    <string name="task">Task</string>
+    <string name="update_task">Update Task</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone No</string>
+    <string name="select_request_type">Select request type from the navigation drawer</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

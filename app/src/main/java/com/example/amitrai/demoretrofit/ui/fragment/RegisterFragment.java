@@ -1,8 +1,6 @@
 package com.example.amitrai.demoretrofit.ui.fragment;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,40 +8,49 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.EditText;
 
 import com.example.amitrai.demoretrofit.R;
-import com.example.amitrai.demoretrofit.listeners.ActivityResultListener;
-import com.example.amitrai.demoretrofit.listeners.PermissionListener;
 import com.example.amitrai.demoretrofit.listeners.ResponseListener;
-import com.example.amitrai.demoretrofit.ui.activity.BaseActivity;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
 
 import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HomeFragment.OnFragmentInteractionListener} interface
+ * {@link RegisterFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link HomeFragment#newInstance} factory method to
+ * Use the {@link RegisterFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends BaseFragment {
+public class RegisterFragment extends BaseFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final int PICK_IMAGE_REQUEST = 201;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+    @Bind(R.id.edt_name)
+    EditText edt_name;
+    @Bind(R.id.edt_mobile_no)
+    EditText edt_mobile_no;
+    @Bind(R.id.edt_email)
+    EditText edt_email;
+    @Bind(R.id.edt_password)
+    EditText edt_password;
 
 
-    public HomeFragment() {
+
+    public RegisterFragment() {
         // Required empty public constructor
     }
 
@@ -53,11 +60,11 @@ public class HomeFragment extends BaseFragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
+     * @return A new instance of fragment RegisterFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
+    public static RegisterFragment newInstance(String param1, String param2) {
+        RegisterFragment fragment = new RegisterFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -78,34 +85,15 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
+        ButterKnife.bind(this, view);
         initView(view);
-
         return view;
     }
 
     @Override
     public void initView(View view) {
-//        ButterKnife.bind(this, view);
-//        Button btn_register = (Button) view.findViewById(R.id.btn_register);
-//        btn_register.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.e(TAG, "register called"+utility.getTimeAgo("2017-01-04 15:45:39"));
-//
-////                attemptRegister();
-////                selectImage();
-////                createTask();
-//            }
-//        });
-    }
 
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -139,51 +127,65 @@ public class HomeFragment extends BaseFragment {
 
 
 
-    /**
-     * uploads image on server.
-     */
-    private void uploadImage(String filePath){
-        connection.uploadImage(filePath, service, new ResponseListener() {
-            @Override
-            public void onSuccess(String response) {
-                Log.e(TAG, ""+response);
-                Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
-            }
+    @OnClick(R.id.btn_register)
+    void attemptRegister(){
 
-            @Override
-            public void onError(String error) {
-                Log.e(TAG, ""+error);
-            }
-        });
-    }
+        String name, email, mobile_no, password;
+        name = edt_name.getText().toString();
+        email = edt_email.getText().toString();
+        mobile_no = edt_mobile_no.getText().toString();
+        password = edt_password.getText().toString();
 
+        boolean isCancel = false;
+        View focusView = null;
 
-    private void selectImage(){
-        utility.checkPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE,
-                new PermissionListener() {
+        if (name.isEmpty()){
+            isCancel = true;
+            focusView = edt_name;
+            edt_name.setError("please enter a valid name");
+        }else if (mobile_no.isEmpty() && utility.isValidPhone(mobile_no)){
+            isCancel = true;
+            focusView = edt_mobile_no;
+            edt_mobile_no.setError("please enter a valid mobile no.");
+        }else if (email.isEmpty()){
+            isCancel = true;
+            focusView = edt_email;
+            edt_email.setError("please enter a valid email address.");
+        }else if (password.isEmpty()){
+            isCancel = true;
+            focusView = edt_password;
+            edt_password.setError("please enter a valid password.");
+        }
+
+        if (isCancel){
+            focusView.requestFocus();
+        }else {
+            try {
+                Log.e(TAG, "received call");
+                Call<ResponseBody> call = service.register("android_user","user@evon.com","asdf"
+                        ,"123456789");
+                connection.request(call, new ResponseListener() {
                     @Override
-                    public void onPermissionGranted(int permission_code) {
-                        BaseActivity ctx = (BaseActivity) getContext();
-                        ctx.selectImage(new ActivityResultListener() {
-                            @Override
-                            public void onActivityResult(Intent data) {
-                                try {
-                                    Uri selectedImage = data.getData();
-                                    String path = utility.getRealPathFromURI_API19(getActivity(), selectedImage);
-                                    Log.e(TAG, ""+path);
-                                    uploadImage(path);
-                                }catch (Exception exp){
-                                    exp.printStackTrace();
-                                }
-                            }
-                        });
+                    public void onSuccess(String response) {
+                        Log.e(TAG, "get respo"+response);
                     }
 
                     @Override
-                    public void onPermissionDenied(int permission_code) {
-
+                    public void onError(String error) {
+                        Log.e(TAG, "get err"+error);
                     }
                 });
-
+            }catch (Exception exp){
+                exp.printStackTrace();
+            }
+        }
     }
+
+    @OnClick(R.id.btn_login)
+    void openLoginFragment(){
+        if(activity != null){
+            activity.replaceFragment(new LoginFragment(), true);
+        }
+    }
+
 }
