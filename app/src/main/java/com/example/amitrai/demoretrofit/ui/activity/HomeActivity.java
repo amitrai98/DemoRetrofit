@@ -1,7 +1,9 @@
 package com.example.amitrai.demoretrofit.ui.activity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,13 +12,25 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.amitrai.demoretrofit.R;
+import com.example.amitrai.demoretrofit.backend.ApiInterface;
+import com.example.amitrai.demoretrofit.backend.Connection;
+import com.example.amitrai.demoretrofit.listeners.ActivityResultListener;
 import com.example.amitrai.demoretrofit.listeners.LoginListener;
+import com.example.amitrai.demoretrofit.listeners.PermissionListener;
+import com.example.amitrai.demoretrofit.listeners.ResponseListener;
 import com.example.amitrai.demoretrofit.models.Data;
+import com.example.amitrai.demoretrofit.ui.AppInitials;
+import com.example.amitrai.demoretrofit.ui.fragment.AboutFragment;
 import com.example.amitrai.demoretrofit.ui.fragment.CreateTaskFragment;
 import com.example.amitrai.demoretrofit.ui.fragment.LoginFragment;
 import com.example.amitrai.demoretrofit.ui.fragment.TasksFragment;
+import com.example.amitrai.demoretrofit.utility.Utility;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,7 +43,18 @@ public class HomeActivity extends BaseActivity
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
     @Bind(R.id.nav_view) NavigationView navigationView;
+    @Bind(R.id.content_home)
+    RelativeLayout content_home;
+
+    @Inject
+    Connection connection;
+
+    @Inject
+    ApiInterface service;
+
     private String TAG = getClass().getSimpleName();
+
+    Utility utility;
 
 //    @Bind(R.id.txt_name)
 //    TextView txt_name;
@@ -42,7 +67,10 @@ public class HomeActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        AppInitials.getContext().getNetComponent().inject(this);
+
         ButterKnife.bind(this);
+
 
         setSupportActionBar(toolbar);
 
@@ -60,6 +88,9 @@ public class HomeActivity extends BaseActivity
     public void initView() {
 //        String url = component;
 //        Log.e(TAG, ""+url);
+
+        utility = new Utility();
+        utility.changeColor(content_home, this);
         LoginFragment fragment = new LoginFragment();
         fragment.setLoginListener(this);
         replaceFragment(fragment, true);
@@ -104,9 +135,11 @@ public class HomeActivity extends BaseActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        utility.changeColor(content_home, this);
 
         if (id == R.id.get_request) {
             // Handle the camera action
@@ -124,10 +157,11 @@ public class HomeActivity extends BaseActivity
             TasksFragment fragment = new TasksFragment();
             fragment.setRequestType(constants.DELETE);
             replaceFragment(fragment, false);
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_logout) {
+            preference.logout();
+            replaceFragment(new LoginFragment(), true);
+        } else if (id == R.id.nav_about) {
+            replaceFragment(new AboutFragment(), true);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -149,4 +183,51 @@ public class HomeActivity extends BaseActivity
 //            txt_email.setText(data.getEmail());
         Log.e(TAG, ""+data.getName());
     }
+
+    void selectImage(){
+        utility.checkPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE,
+                new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(int permission_code) {
+                       selectImage(new ActivityResultListener() {
+                            @Override
+                            public void onActivityResult(Intent data) {
+                                try {
+                                    Uri selectedImage = data.getData();
+                                    String path = utility.getRealPathFromURI_API19(HomeActivity.this, selectedImage);
+                                    Log.e(TAG, ""+path);
+                                    uploadImage(path);
+                                }catch (Exception exp){
+                                    exp.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onPermissionDenied(int permission_code) {
+
+                    }
+                });
+
+    }
+
+    /**
+     * uploads image on server.
+     */
+    private void uploadImage(String filePath){
+        connection.uploadImage(filePath, service, new ResponseListener() {
+            @Override
+            public void onSuccess(String response) {
+                Log.e(TAG, ""+response);
+                Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, ""+error);
+            }
+        });
+    }
+
 }

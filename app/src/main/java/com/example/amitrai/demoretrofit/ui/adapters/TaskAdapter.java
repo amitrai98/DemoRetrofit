@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +40,7 @@ import static android.content.ContentValues.TAG;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private List<Task> list_task;
-//    private Utility utility;
     private String REQUEST_TYPE;
-//    private ApiInterface service;
-//    private Connection connection;
-//    private AppConstants constants;
     private Context context;
 
     @Inject
@@ -57,15 +54,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Inject
     AppPreference preference;
 
+    String[] states;
+
     public TaskAdapter(List<Task> list_task,String REQUEST_TYPE, Context context){
         this.list_task = list_task;
-//        this.utility = utility;
         this.REQUEST_TYPE = REQUEST_TYPE;
-//        this.service =service;
-//        this.connection = connection;
         this.context = context;
-//        constants = new AppConstants();
         AppInitials.getContext().getNetComponent().inject(this);
+        states = context.getResources().getStringArray(R.array.status);
     }
 
     @Override
@@ -78,13 +74,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Override
     public void onBindViewHolder(TaskViewHolder holder, int position) {
         if(list_task.get(position) != null){
-            Task task = list_task.get(position);
-            if(task.getCreatedAt() != null)
-                holder.txt_date.setText("created : "+utility.getTimeAgo(task.getCreatedAt()));
-            if (task.getTask() != null)
-                holder.txt_task.setText(task.getTask());
-            if (task.getStatus() != null)
-                holder.txt_status.setText(task.getStatus());
+            try {
+                Task task = list_task.get(position);
+                int id = Integer.parseInt(task.getStatus());
+                String status = states[id];
+                if(task.getCreatedAt() != null)
+                    holder.txt_date.setText("created : "+utility.getTimeAgo(task.getCreatedAt()));
+                if (task.getTask() != null)
+                    holder.txt_task.setText(task.getTask());
+                if (task.getStatus() != null)
+                    holder.txt_status.setText("status : "+status);
+            }catch (Exception exp){
+                exp.printStackTrace();
+            }
+
         }
     }
 
@@ -94,7 +97,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     class TaskViewHolder extends RecyclerView.ViewHolder{
-        TextView txt_task, txt_date, txt_status, txt_edit;
+        TextView txt_task, txt_date, txt_status, txt_edit, txt_delete;
         CardView card_view;
         TaskViewHolder(View itemView) {
             super(itemView);
@@ -103,12 +106,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             txt_date = (TextView) itemView.findViewById(R.id.txt_date);
             txt_status = (TextView) itemView.findViewById(R.id.txt_status);
             txt_edit = (TextView) itemView.findViewById(R.id.txt_edit);
+            txt_delete = (TextView) itemView.findViewById(R.id.txt_delete);
 
             if (REQUEST_TYPE.equalsIgnoreCase(constants.PUT)){
                 txt_edit.setVisibility(View.VISIBLE);
+            }if (REQUEST_TYPE.equalsIgnoreCase(constants.DELETE)){
+                txt_delete.setVisibility(View.VISIBLE);
             }
 
-            card_view.setOnClickListener(new View.OnClickListener() {
+            txt_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.e(TAG, "item clicked "+getAdapterPosition());
@@ -133,12 +139,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         }
     }
 
-
     /**
      * attempt delete on from server
      */
     private void attemptDelete(String id, final int position){
-        Call<ResponseBody> call = service.deleteTask("be307467723b32663997552fb0e81de7", id);
+        Call<ResponseBody> call = service.deleteTask(preference.getAPI_KEY(), id);
         connection.request(call, new ResponseListener() {
             @Override
             public void onSuccess(String response) {
@@ -158,16 +163,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
      * shows dialog for updating task
      */
     private void showUpdateDialog(final Task task, final int position){
-        // Create custom dialog object
         final Dialog dialog = new Dialog(context);
-        // Include dialog.xml file
         dialog.setContentView(R.layout.dialog_update_task);
-        // Set dialog title
         dialog.setTitle("Update Task");
 
-        // set values for custom dialog components - text, image and button
         final TextView edt_task = (TextView) dialog.findViewById(R.id.edt_task);
-        final TextView edt_status = (TextView) dialog.findViewById(R.id.edt_status);
+        final Spinner spinner_status = (Spinner) dialog.findViewById(R.id.spinner_status);
 
         Button btn_update_task = (Button) dialog.findViewById(R.id.btn_update_task);
         Button btn_cancel = (Button) dialog.findViewById(R.id.btn_cancel);
@@ -178,7 +179,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Close dialog
                 dialog.dismiss();
             }
         });
@@ -187,18 +187,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             @Override
             public void onClick(View v) {
                 String new_task = edt_task.getText().toString();
-                String new_status = edt_status.getText().toString();
-                if(new_task.trim().equalsIgnoreCase(task.getTask().trim())
-                        && new_status.trim().equalsIgnoreCase(task.getStatus().trim())){
+                int id = spinner_status.getSelectedItemPosition();
+                if(new_task.trim().equalsIgnoreCase(task.getTask().trim())){
                     Toast.makeText(context, "task and status are same.", Toast.LENGTH_SHORT).show();
+                }else if(id == 0){
+                    Toast.makeText(context, "Select a valid status.", Toast.LENGTH_SHORT).show();
                 }else {
                     dialog.dismiss();
-                    updateTask(task.getId(), new_task, new_status, position);
+                    updateTask(task.getId(), new_task, ""+id, position);
                 }
             }
         });
     }
-
 
     /**
      * attempts to update the data on server

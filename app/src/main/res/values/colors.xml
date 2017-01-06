@@ -5,4 +5,13 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="white">#ffffff</color>
+    <color name="transparent">#00000000</color>
+
+    <string-array name="values">
+        <item>#26C6DA</item>
+        <item>#4CAF50</item>
+        <item>#ffc035</item>
+        <item>#7C4DFF</item>
+        <item>#607D8B</item>
+    </string-array>
 </resources>

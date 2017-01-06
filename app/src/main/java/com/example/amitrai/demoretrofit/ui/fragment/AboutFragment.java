@@ -4,35 +4,26 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import com.example.amitrai.demoretrofit.R;
-import com.example.amitrai.demoretrofit.listeners.ResponseListener;
-import com.example.amitrai.demoretrofit.models.Task;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link CreateTaskFragment.OnFragmentInteractionListener} interface
+ * {@link AboutFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link CreateTaskFragment#newInstance} factory method to
+ * Use the {@link AboutFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CreateTaskFragment extends BaseFragment {
+public class AboutFragment extends BaseFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -42,14 +33,11 @@ public class CreateTaskFragment extends BaseFragment {
     private String mParam1;
     private String mParam2;
 
-    @Bind(R.id.edt_create_task)
-    EditText edt_create_task;
-
-    @Bind(R.id.spinner_status)
-    Spinner spinner_status;
+    @Bind(R.id.web_view)
+    WebView webView;
 
 
-    public CreateTaskFragment() {
+    public AboutFragment() {
         // Required empty public constructor
     }
 
@@ -59,11 +47,11 @@ public class CreateTaskFragment extends BaseFragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment CreateTaskFragment.
+     * @return A new instance of fragment AboutFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CreateTaskFragment newInstance(String param1, String param2) {
-        CreateTaskFragment fragment = new CreateTaskFragment();
+    public static AboutFragment newInstance(String param1, String param2) {
+        AboutFragment fragment = new AboutFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -84,7 +72,7 @@ public class CreateTaskFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =inflater.inflate(R.layout.fragment_create_task, container, false);
+        View view = inflater.inflate(R.layout.fragment_about, container, false);
         ButterKnife.bind(this, view);
         initView(view);
         return view;
@@ -92,6 +80,16 @@ public class CreateTaskFragment extends BaseFragment {
 
     @Override
     public void initView(View view) {
+        webView.loadUrl("http://www.github.com/amitrai98");
+        webView.setWebViewClient(new WebViewClient() {
+            public boolean shouldOverrideUrlLoading(WebView viewx, String urlx) {
+                viewx.loadUrl(urlx);
+                return false;
+            }
+        });
+
+
+
 
     }
 
@@ -124,58 +122,9 @@ public class CreateTaskFragment extends BaseFragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    @OnClick(R.id.btn_cancel)
-    void cancel(){
-        getActivity().onBackPressed();
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-    }
-
-
-    /**
-     * creates a new task.
-     */
-    @OnClick(R.id.btn_create_task)
-    void createTask(){
-
-        int id = spinner_status.getSelectedItemPosition();
-        if (edt_create_task.getText().toString().isEmpty()){
-            edt_create_task.setError("can not left blank");
-        }else if (id == 0){
-            Toast.makeText(getContext(), "please select a valid status", Toast.LENGTH_SHORT).show();
-        }else {
-            try {
-                if (!preference.getAPI_KEY().isEmpty()){
-                    Call<ResponseBody> call = service.createTask(preference.getAPI_KEY(),
-                            new Task(edt_create_task.getText().toString(),""+id));
-                    connection.request(call, new ResponseListener() {
-                        @Override
-                        public void onSuccess(String response) {
-                            Log.e(TAG, "request was success"+response);
-                            edt_create_task.setText("");
-                            spinner_status.setSelection(0);
-                            Toast.makeText(getActivity(), "task created successfully",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onError(String error) {
-                            Log.e(TAG, "request failed "+error);
-                        }
-                    });
-                }else{
-                    Toast.makeText(getActivity(), "you are not logged in",
-                            Toast.LENGTH_SHORT).show();
-                }
-
-            }catch (Exception exp){
-                exp.printStackTrace();
-            }
-        }
-
     }
 }

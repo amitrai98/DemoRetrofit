@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.amitrai.demoretrofit.models.Data;
+import com.example.amitrai.demoretrofit.models.RememberMe;
 
 
 public class AppPreference {
@@ -22,7 +23,11 @@ public class AppPreference {
     private final String EMAIL = "EMAIL";
     private final String CREATED_AT = "CREATED_AT";
     private final String mPREF_NAMEUTILS = "RETROFIT_DEMO_PREF_UTILS";
+    private final String USERNAME = "USERNAME";
+    private final String PASSWORD = "PASSWORD";
     private static final String KEY_USERID = "id";
+
+
 
 //    private static final String KEY_USERALREADY = "userAlready";
 //    private static final String KEY_ACESSTOKEN = "user_id";
@@ -119,6 +124,17 @@ public class AppPreference {
 
     }
 
+    public void setRememberme(RememberMe rememberMe){
+        mEditor.putString(USERNAME, rememberMe.getUsername());
+        mEditor.putString(PASSWORD, rememberMe.getPassword());
+        mEditor.commit();
+    }
+
+    public RememberMe getRemberme(){
+        return new RememberMe(mPref.getString(USERNAME, ""),
+                mPref.getString(PASSWORD, ""));
+    }
+
     public Data getLoggedInUser() {
         Data login = new Data();
         login.setApiKey(mPref.getString(API_KEY, ""));
@@ -127,6 +143,14 @@ public class AppPreference {
         login.setName(mPref.getString(NAME, ""));
 
         return login;
+    }
+
+    public void logout(){
+        mEditor.putString(API_KEY, "");
+        mEditor.putString(NAME, "");
+        mEditor.putString(EMAIL, "");
+        mEditor.putString(CREATED_AT, "");
+        mEditor.commit();
     }
 
 //    public void setpaymentToken(String clienttoken) {

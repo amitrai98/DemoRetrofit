@@ -9,9 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.amitrai.demoretrofit.R;
 import com.example.amitrai.demoretrofit.listeners.ResponseListener;
+import com.example.amitrai.demoretrofit.models.CommonResponse;
+import com.example.amitrai.demoretrofit.models.RememberMe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -82,6 +85,11 @@ public class RegisterFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -130,7 +138,7 @@ public class RegisterFragment extends BaseFragment {
     @OnClick(R.id.btn_register)
     void attemptRegister(){
 
-        String name, email, mobile_no, password;
+        final String name, email, mobile_no, password;
         name = edt_name.getText().toString();
         email = edt_email.getText().toString();
         mobile_no = edt_mobile_no.getText().toString();
@@ -162,12 +170,25 @@ public class RegisterFragment extends BaseFragment {
         }else {
             try {
                 Log.e(TAG, "received call");
-                Call<ResponseBody> call = service.register("android_user","user@evon.com","asdf"
-                        ,"123456789");
+                Call<ResponseBody> call = service.register(name, email, password, mobile_no);
                 connection.request(call, new ResponseListener() {
                     @Override
                     public void onSuccess(String response) {
                         Log.e(TAG, "get respo"+response);
+                        String message = "unable to register you right now please try again latter";
+                        CommonResponse respo = gson.fromJson(response, CommonResponse.class);
+
+                        if (respo.getError()){
+                            if(respo.getMessage() != null)
+                                message = respo.getMessage();
+
+                            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(getContext(), "you are registerd now", Toast.LENGTH_SHORT).show();
+                            preference.setRememberme(new RememberMe(email, password));
+                            openLoginFragment();
+                        }
+
                     }
 
                     @Override

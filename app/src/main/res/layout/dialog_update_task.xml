@@ -27,14 +27,12 @@
                 android:maxLines="1"
                 android:hint="@string/task"/>
 
-            <EditText
-                android:id="@+id/edt_status"
-                android:inputType="number"
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spinner_status"
+                android:entries="@array/status"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:maxLines="1"
-                android:hint="@string/status"/>
+                android:layout_height="wrap_content"/>
 
             <Button
                 android:id="@+id/btn_update_task"

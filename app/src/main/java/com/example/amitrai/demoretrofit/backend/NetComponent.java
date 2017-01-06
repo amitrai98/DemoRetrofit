@@ -1,5 +1,6 @@
 package com.example.amitrai.demoretrofit.backend;
 
+import com.example.amitrai.demoretrofit.ui.activity.BaseActivity;
 import com.example.amitrai.demoretrofit.ui.adapters.TaskAdapter;
 import com.example.amitrai.demoretrofit.ui.fragment.BaseFragment;
 import com.example.amitrai.demoretrofit.utility.Utility;
@@ -18,6 +19,7 @@ public interface NetComponent {
      void inject(BaseFragment fragment);
      void inject(Utility utility);
      void inject(TaskAdapter adapter);
+     void inject(BaseActivity activity);
     // void inject(MyService service);
 }
 

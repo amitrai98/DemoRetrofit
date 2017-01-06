@@ -10,10 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.example.amitrai.demoretrofit.R;
+import com.example.amitrai.demoretrofit.databases.AppPreference;
 import com.example.amitrai.demoretrofit.listeners.ActivityResultListener;
 import com.example.amitrai.demoretrofit.listeners.PermissionListener;
+import com.example.amitrai.demoretrofit.ui.AppInitials;
 import com.example.amitrai.demoretrofit.ui.fragment.BaseFragment;
 import com.example.amitrai.demoretrofit.utility.AppConstants;
+
+import javax.inject.Inject;
 
 public abstract class BaseActivity extends AppCompatActivity{
     public static int PICK_IMAGE_REQUEST = 203;
@@ -29,6 +33,8 @@ public abstract class BaseActivity extends AppCompatActivity{
 //
 //    @Inject
 //    public SharedPreferences preferences;
+    @Inject
+    AppPreference preference;
 
 
     @Override
@@ -36,6 +42,8 @@ public abstract class BaseActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         constants = new AppConstants();
+
+        AppInitials.getContext().getNetComponent().inject(this);
 
 //        ((AppInitials) getApplication()).getNetComponent().inject(this);
     }

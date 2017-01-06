@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.amitrai.demoretrofit.R;
 import com.example.amitrai.demoretrofit.listeners.ResponseListener;
@@ -48,6 +49,9 @@ public class TasksFragment extends BaseFragment {
 
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipe_refresh;
+
+    @Bind(R.id.txt_no_item)
+    TextView txt_no_item;
 
     private TaskAdapter adapter = null;
 
@@ -121,6 +125,7 @@ public class TasksFragment extends BaseFragment {
         adapter = new TaskAdapter(taskList, REQUEST_TYPE, getContext());
         recycle_tasks.setAdapter(adapter);
         recycle_tasks.setLayoutManager(layoutManager);
+        txt_no_item.setVisibility(View.GONE);
 
         swipe_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -149,7 +154,7 @@ public class TasksFragment extends BaseFragment {
 
     void getTasks(){
         try {
-            Call<ResponseBody> call = service.getTasks("be307467723b32663997552fb0e81de7");
+            Call<ResponseBody> call = service.getTasks(preference.getAPI_KEY());
             connection.request(call, new ResponseListener() {
                 @Override
                 public void onSuccess(String response) {
@@ -161,6 +166,8 @@ public class TasksFragment extends BaseFragment {
                         Log.e(TAG, ""+data.getTasks());
                         taskList.addAll(data.getTasks());
                         adapter.notifyDataSetChanged();
+                        if(taskList.size() == 0)
+                            txt_no_item.setVisibility(View.VISIBLE);
                     }catch (Exception exp){
                         exp.printStackTrace();
                     }
@@ -170,6 +177,8 @@ public class TasksFragment extends BaseFragment {
                 public void onError(String error) {
                     Log.e(TAG, "request failed "+error);
                     swipe_refresh.setRefreshing(false);
+                    if(taskList.size() == 0)
+                        txt_no_item.setVisibility(View.VISIBLE);
                 }
             });
         }catch (Exception exp){

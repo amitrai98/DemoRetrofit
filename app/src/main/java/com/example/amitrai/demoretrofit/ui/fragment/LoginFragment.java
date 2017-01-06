@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ import com.example.amitrai.demoretrofit.listeners.LoginListener;
 import com.example.amitrai.demoretrofit.listeners.ResponseListener;
 import com.example.amitrai.demoretrofit.models.Data;
 import com.example.amitrai.demoretrofit.models.LoginModel;
+import com.example.amitrai.demoretrofit.models.RememberMe;
 import com.google.gson.Gson;
 
 import butterknife.Bind;
@@ -45,6 +47,9 @@ public class LoginFragment extends BaseFragment {
 
     @Bind(R.id.edt_password)
     EditText edt_password;
+
+    @Bind(R.id.remember_me)
+    CheckBox remember_me;
 
     private LoginListener loginListener;
 
@@ -109,8 +114,8 @@ public class LoginFragment extends BaseFragment {
     void attemptLogin(){
         try {
 
-            String email = edt_email.getText().toString();
-            String password = edt_password.getText().toString();
+            final String email = edt_email.getText().toString();
+            final String password = edt_password.getText().toString();
 
             if (!email.trim().isEmpty() && utility.isValidEmail(email) && !password.trim().isEmpty()){
                 Call<ResponseBody> call = service.login(email, password);
@@ -132,6 +137,13 @@ public class LoginFragment extends BaseFragment {
                                 preference.setUserLoginTrue(login_data);
                                 if(loginListener != null)
                                     loginListener.onLoginSuccess(login_data);
+
+                                if (remember_me.isChecked()){
+                                    preference.setRememberme(new RememberMe(email, password));
+                                }else {
+                                    preference.setRememberme(new RememberMe("", ""));
+                                }
+
                                 replaceFragment(new HomeFragment(), true);
                             }
                         }catch (Exception exp){
@@ -163,4 +175,15 @@ public class LoginFragment extends BaseFragment {
         }
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        RememberMe rememberMe = preference.getRemberme();
+        if(!rememberMe.getUsername().isEmpty() && !rememberMe.getPassword().isEmpty()){
+            edt_email.setText(rememberMe.getUsername());
+            edt_password.setText(rememberMe.getPassword());
+            remember_me.setChecked(true);
+        }
+    }
 }

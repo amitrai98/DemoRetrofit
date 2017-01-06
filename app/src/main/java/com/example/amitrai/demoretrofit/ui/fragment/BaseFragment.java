@@ -14,6 +14,7 @@ import com.example.amitrai.demoretrofit.databases.AppPreference;
 import com.example.amitrai.demoretrofit.ui.AppInitials;
 import com.example.amitrai.demoretrofit.ui.activity.BaseActivity;
 import com.example.amitrai.demoretrofit.utility.Utility;
+import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,9 @@ public abstract class BaseFragment extends Fragment {
 
     @Inject
     AppPreference preference;
+
+    @Inject
+    Gson gson;
 
 
     BaseActivity activity;

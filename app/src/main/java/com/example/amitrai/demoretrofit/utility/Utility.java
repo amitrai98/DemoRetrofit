@@ -7,10 +7,12 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.ExifInterface;
@@ -28,8 +30,10 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
+import com.example.amitrai.demoretrofit.R;
 import com.example.amitrai.demoretrofit.listeners.PermissionListener;
 import com.example.amitrai.demoretrofit.ui.AppInitials;
 import com.example.amitrai.demoretrofit.ui.activity.BaseActivity;
@@ -43,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -56,6 +61,8 @@ public class Utility {
 
     @Inject
     AppConstants constants;
+
+    int prev = 0;
 
 
     public Utility(){
@@ -574,6 +581,29 @@ public class Utility {
 
     public static boolean isValidPhone(String phone){
         return android.util.Patterns.PHONE.matcher(phone).matches();
+    }
+
+    public void changeColor(View view, Context context){
+        Resources res = context.getResources();
+
+        String[] color_array = res.getStringArray(R.array.values);
+
+        int random = getRandom(0, color_array.length);
+
+        while(random == prev){
+            random=getRandom(0, color_array.length);
+        }
+        prev = random;
+
+        String selected_color = color_array[random];
+        int color = Color.parseColor(selected_color);
+        view.setBackgroundColor(color);
+
+    }
+
+    private int getRandom(int min , int max){
+        Random r = new Random();
+        return  r.nextInt(max - 0) + 0;
     }
 
 }
