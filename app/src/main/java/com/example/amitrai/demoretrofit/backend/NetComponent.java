@@ -11,6 +11,7 @@ import dagger.Component;
 
 /**
  * Created by amitrai on 29/12/16.
+ * see more at www.github.com/amitrai98
  */
 @Singleton
 @Component(modules={ConnectionModule.class})

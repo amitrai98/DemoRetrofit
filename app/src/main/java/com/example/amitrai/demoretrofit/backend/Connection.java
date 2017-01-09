@@ -16,14 +16,13 @@ import retrofit2.Response;
 
 /**
  * Created by amitrai on 29/12/16.
+ * see more at www.github.com/amitrai98
  */
 
 public class Connection {
 
     private final String TAG = getClass().getSimpleName();
 
-    private static Connection connection;
-    private static String BASE_URL;
     /**
      * creats the instance of connection.
      * @return connection
@@ -96,18 +95,15 @@ public class Connection {
                 }catch (Exception exp){
                     exp.printStackTrace();
                     responseListener.onError("some exception occured");
+
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 t.printStackTrace();
+                responseListener.onError(t.getMessage());
             }
         });
     }
-
-    public void makeRequest(){
-        Log.e(TAG, "got your call");
-    }
-
 }

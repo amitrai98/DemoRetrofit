@@ -54,7 +54,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     @Inject
     AppPreference preference;
 
-    String[] states;
+    private String[] states;
 
     public TaskAdapter(List<Task> list_task,String REQUEST_TYPE, Context context){
         this.list_task = list_task;

@@ -6,6 +6,7 @@
 
     <color name="white">#ffffff</color>
     <color name="transparent">#00000000</color>
+    <color name="semi_transparent">#11000000</color>
 
     <string-array name="values">
         <item>#26C6DA</item>

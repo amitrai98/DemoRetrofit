@@ -24,15 +24,6 @@ import javax.inject.Inject;
  * create an instance of this fragment.
  */
 public abstract class BaseFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
 
     @Inject
     ApiInterface service;
@@ -65,10 +56,6 @@ public abstract class BaseFragment extends Fragment {
 
         AppInitials.getContext().getNetComponent().inject(this);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         if (getActivity() instanceof  BaseActivity)
             activity = (BaseActivity) getActivity();
     }

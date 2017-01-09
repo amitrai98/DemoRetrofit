@@ -28,11 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity{
     private static PermissionListener permissionListener;
 
     AppConstants constants;
-//    @Inject
-//    public String component;
-//
-//    @Inject
-//    public SharedPreferences preferences;
+
     @Inject
     AppPreference preference;
 
@@ -42,10 +38,7 @@ public abstract class BaseActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         constants = new AppConstants();
-
         AppInitials.getContext().getNetComponent().inject(this);
-
-//        ((AppInitials) getApplication()).getNetComponent().inject(this);
     }
 
 
@@ -53,30 +46,6 @@ public abstract class BaseActivity extends AppCompatActivity{
      * initialize all view elements here.
      */
     public abstract void initView();
-
-//    /**
-//     * replaces fragment to the container
-//     * @param fragment name of fragment to be replaced
-//     * @param storeInStack should store in stack or not.
-//     */
-//    public void replaceFragment(BaseFragment fragment, boolean storeInStack){
-//        String backStateName = fragment.getClass().getSimpleName();
-//
-//        FragmentManager manager = getSupportFragmentManager();
-//        boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
-//
-//        if (!fragmentPopped){ //fragment not in back stack, create it.
-//            FragmentTransaction ft = manager.beginTransaction();
-//            if (storeInStack)
-//                ft.addToBackStack(backStateName);
-//            ft.replace(R.id.container, fragment);
-//
-//
-//            ft.commit();
-//        }
-//    }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -118,7 +87,6 @@ public abstract class BaseActivity extends AppCompatActivity{
 
         switch (requestCode) {
             case 101: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if(permissionListener != null)
@@ -128,20 +96,13 @@ public abstract class BaseActivity extends AppCompatActivity{
                     if(permissionListener != null)
                         permissionListener.onPermissionDenied(requestCode);
                 }
-                return;
             }
-
-
-
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
     /**
      * sets permission listeners for future call backs.
-     * @param listener
+     * @param listener for permissions
      */
     public static void setPermissionListener(@NonNull PermissionListener listener){
         permissionListener = listener;
@@ -150,14 +111,13 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     public void replaceFragment (BaseFragment fragment, boolean saveInBackStack){
         String backStateName =  fragment.getClass().getName();
-        String fragmentTag = backStateName;
 
         FragmentManager manager = getSupportFragmentManager();
         boolean fragmentPopped = manager.popBackStackImmediate (backStateName, 0);
 
         if (!fragmentPopped){ //fragment not in back stack, create it.
             FragmentTransaction ft = manager.beginTransaction();
-            ft.replace(R.id.container, fragment, fragmentTag);
+            ft.replace(R.id.container, fragment, backStateName);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             if (saveInBackStack)
                 ft.addToBackStack(backStateName);

@@ -16,13 +16,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by amitrai on 29/12/16.
+ * see more at www.github.com/amitrai98
  */
 
 @Module
 public class ConnectionModule {
 
-    String mBaseUrl;
-    Context context;
+    private String mBaseUrl;
+    private Context context;
 
     // Constructor needs one parameter to instantiate.
     public ConnectionModule(String baseUrl, Context context) {
@@ -38,14 +39,6 @@ public class ConnectionModule {
     }
 
 
-
-//    @Provides
-//    @Singleton
-//    Gson provideGson() {
-//        GsonBuilder gsonBuilder = new GsonBuilder();
-//        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
-//        return gsonBuilder.create();
-//    }
 
     @Provides
     @Singleton

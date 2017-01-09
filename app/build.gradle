@@ -5,7 +5,7 @@ android {
     compileOptions.incremental = false
     defaultConfig {
         applicationId "com.example.amitrai.demoretrofit"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"

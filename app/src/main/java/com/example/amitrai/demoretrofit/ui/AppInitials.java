@@ -8,6 +8,7 @@ import com.example.amitrai.demoretrofit.backend.NetComponent;
 
 /**
  * Created by amitrai on 29/12/16.
+ * see more at www.github.com/amitrai98
  */
 
 public class AppInitials extends Application {

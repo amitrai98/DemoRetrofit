@@ -55,6 +55,7 @@ import static android.content.ContentValues.TAG;
 
 /**
  * Created by amitrai on 29/12/16.
+ * see more at www.github.com/amitrai98
  */
 
 public class Utility {
@@ -575,11 +576,11 @@ public class Utility {
     }
 
 
-    public static boolean isValidEmail(CharSequence target) {
+    public boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();}
 
 
-    public static boolean isValidPhone(String phone){
+    public boolean isValidPhone(String phone){
         return android.util.Patterns.PHONE.matcher(phone).matches();
     }
 
